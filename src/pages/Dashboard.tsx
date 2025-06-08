@@ -40,6 +40,10 @@ const Dashboard = () => {
   const totalCostThisMonth = monthlyRefuelings.reduce((sum, r) => sum + Number(r.total_cost), 0);
   const lastRefueling = refuelings[0];
 
+  // Calcular km pendentes (não pagos)
+  const pendingUsage = vehicleUsage.filter(usage => !usage.is_paid);
+  const totalPendingKm = pendingUsage.reduce((sum, usage) => sum + (usage.km_driven || 0), 0);
+
   const handleVehicleSubmit = async (vehicleData: any) => {
     if (editingVehicle) {
       await updateVehicle.mutateAsync({ id: editingVehicle.id, ...vehicleData });
@@ -121,13 +125,13 @@ const Dashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Veículos Cadastrados</CardTitle>
-              <Car className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Km Pendente</CardTitle>
+              <Route className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{vehicles.length}</div>
+              <div className="text-2xl font-bold">{totalPendingKm}km</div>
               <p className="text-xs text-muted-foreground">
-                {vehicles.length === 0 ? 'Nenhum veículo' : `${vehicles.length} veículo${vehicles.length > 1 ? 's' : ''}`}
+                {pendingUsage.length === 0 ? 'Nenhum pendente' : `${pendingUsage.length} registro${pendingUsage.length > 1 ? 's' : ''} não pago${pendingUsage.length > 1 ? 's' : ''}`}
               </p>
             </CardContent>
           </Card>
