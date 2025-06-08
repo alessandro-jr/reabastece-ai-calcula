@@ -40,17 +40,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signInWithGoogle = async () => {
-    // Usar a URL atual como redirect
-    const currentUrl = window.location.href;
-    const baseUrl = window.location.origin;
-    
-    console.log('Attempting Google sign in with redirect:', baseUrl);
+    console.log('Attempting Google sign in without custom redirect');
     
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: baseUrl
-      }
+      provider: 'google'
     });
     
     if (error) {
