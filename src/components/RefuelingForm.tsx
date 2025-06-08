@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Drawer, DrawerContent as DrawerContentUI, DrawerDescription as DrawerDescriptionUI, DrawerFooter as DrawerFooterUI, DrawerHeader as DrawerHeaderUI, DrawerTitle as DrawerTitleUI } from '@/components/ui/drawer';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useVehicles } from '@/hooks/useVehicles';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -71,15 +73,23 @@ export const RefuelingForm = ({ isOpen, onOpenChange, onSubmit, refueling, isLoa
     setFormData({ ...formData, price_per_liter: price, total_cost: Number(total) });
   };
 
+  const isMobile = useIsMobile();
+  const Modal = isMobile ? Drawer : Dialog;
+  const ModalContent = isMobile ? DrawerContentUI : DialogContent;
+  const ModalHeader = isMobile ? DrawerHeaderUI : DialogHeader;
+  const ModalTitle = isMobile ? DrawerTitleUI : DialogTitle;
+  const ModalDescription = isMobile ? DrawerDescriptionUI : DialogDescription;
+  const ModalFooter = isMobile ? DrawerFooterUI : DialogFooter;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>{refueling ? 'Editar Abastecimento' : 'Novo Abastecimento'}</DialogTitle>
-          <DialogDescription>
+    <Modal open={isOpen} onOpenChange={onOpenChange}>
+      <ModalContent className={`${isMobile ? '' : 'sm:max-w-[500px]'} max-h-[90vh] overflow-y-auto`}>
+        <ModalHeader>
+          <ModalTitle>{refueling ? 'Editar Abastecimento' : 'Novo Abastecimento'}</ModalTitle>
+          <ModalDescription>
             {refueling ? 'Edite as informações do abastecimento.' : 'Registre um novo abastecimento.'}
-          </DialogDescription>
-        </DialogHeader>
+          </ModalDescription>
+        </ModalHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="vehicle_id">Veículo *</Label>
@@ -180,16 +190,16 @@ export const RefuelingForm = ({ isOpen, onOpenChange, onSubmit, refueling, isLoa
               rows={3}
             />
           </div>
-          <DialogFooter>
+          <ModalFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button type="submit" disabled={isLoading || !formData.vehicle_id}>
               {isLoading ? 'Salvando...' : refueling ? 'Atualizar' : 'Registrar'}
             </Button>
-          </DialogFooter>
+          </ModalFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </ModalContent>
+    </Modal>
   );
 };

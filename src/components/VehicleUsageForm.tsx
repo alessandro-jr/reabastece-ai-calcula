@@ -12,6 +12,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
+  Drawer,
+  DrawerContent as DrawerContentUI,
+  DrawerDescription as DrawerDescriptionUI,
+  DrawerFooter as DrawerFooterUI,
+  DrawerHeader as DrawerHeaderUI,
+  DrawerTitle as DrawerTitleUI,
+} from '@/components/ui/drawer';
+import { useIsMobile } from '@/hooks/use-mobile';
+import {
   Form,
   FormControl,
   FormField,
@@ -203,17 +212,25 @@ export const VehicleUsageForm = ({
       })()
     : null;
 
+  const isMobile = useIsMobile();
+  const Modal = isMobile ? Drawer : Dialog;
+  const ModalContent = isMobile ? DrawerContentUI : DialogContent;
+  const ModalHeader = isMobile ? DrawerHeaderUI : DialogHeader;
+  const ModalTitle = isMobile ? DrawerTitleUI : DialogTitle;
+  const ModalDescription = isMobile ? DrawerDescriptionUI : DialogDescription;
+  const ModalFooter = isMobile ? DrawerFooterUI : DialogFooter;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+    <Modal open={isOpen} onOpenChange={onOpenChange}>
+      <ModalContent className={`${isMobile ? '' : 'sm:max-w-[600px]'} max-h-[90vh] overflow-y-auto`}>
+        <ModalHeader>
+          <ModalTitle>
             {usage ? 'Editar Registro de Uso' : 'Novo Registro de Uso do Veículo'}
-          </DialogTitle>
-          <DialogDescription>
+          </ModalTitle>
+          <ModalDescription>
             Registre o uso do seu veículo e acompanhe consumo e custos automaticamente.
-          </DialogDescription>
-        </DialogHeader>
+          </ModalDescription>
+        </ModalHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -483,17 +500,17 @@ export const VehicleUsageForm = ({
               )}
             />
 
-            <DialogFooter>
+            <ModalFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancelar
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? 'Salvando...' : usage ? 'Atualizar' : 'Salvar'}
               </Button>
-            </DialogFooter>
+            </ModalFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </ModalContent>
+    </Modal>
   );
 };
