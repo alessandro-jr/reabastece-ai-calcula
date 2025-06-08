@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Drawer, DrawerContent as DrawerContentUI, DrawerDescription as DrawerDescriptionUI, DrawerFooter as DrawerFooterUI, DrawerHeader as DrawerHeaderUI, DrawerTitle as DrawerTitleUI } from '@/components/ui/drawer';
+import { useIsMobile } from '@/hooks/use-mobile';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Vehicle = Tables<'vehicles'>;
@@ -172,15 +174,23 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
     return fields;
   };
 
+  const isMobile = useIsMobile();
+  const Modal = isMobile ? Drawer : Dialog;
+  const ModalContent = isMobile ? DrawerContentUI : DialogContent;
+  const ModalHeader = isMobile ? DrawerHeaderUI : DialogHeader;
+  const ModalTitle = isMobile ? DrawerTitleUI : DialogTitle;
+  const ModalDescription = isMobile ? DrawerDescriptionUI : DialogDescription;
+  const ModalFooter = isMobile ? DrawerFooterUI : DialogFooter;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{vehicle ? 'Editar Veículo' : 'Novo Veículo'}</DialogTitle>
-          <DialogDescription>
+    <Modal open={isOpen} onOpenChange={onOpenChange}>
+      <ModalContent className={`${isMobile ? '' : 'sm:max-w-[425px]'} max-h-[90vh] overflow-y-auto`}>
+        <ModalHeader>
+          <ModalTitle>{vehicle ? 'Editar Veículo' : 'Novo Veículo'}</ModalTitle>
+          <ModalDescription>
             {vehicle ? 'Edite as informações do seu veículo.' : 'Adicione um novo veículo ao seu cadastro.'}
-          </DialogDescription>
-        </DialogHeader>
+          </ModalDescription>
+        </ModalHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nome do Veículo *</Label>
@@ -244,16 +254,16 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
           
           {getFuelConsumptionFields()}
 
-          <DialogFooter>
+          <ModalFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Salvando...' : vehicle ? 'Atualizar' : 'Criar'}
             </Button>
-          </DialogFooter>
+          </ModalFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </ModalContent>
+    </Modal>
   );
 };
