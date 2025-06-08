@@ -80,9 +80,25 @@ export const useVehicleUsage = () => {
     mutationFn: async (usageData: Omit<VehicleUsage, 'id' | 'user_id' | 'created_at' | 'updated_at' | 'vehicle'>) => {
       if (!user?.id) throw new Error('User not authenticated');
 
+      // Converter valores para os tipos corretos antes de enviar
+      const processedData = {
+        ...usageData,
+        user_id: user.id,
+        // Garantir que valores de quilometragem sejam inteiros
+        initial_odometer: usageData.initial_odometer ? Math.round(usageData.initial_odometer) : null,
+        final_odometer: usageData.final_odometer ? Math.round(usageData.final_odometer) : null,
+        km_driven: usageData.km_driven ? Math.round(usageData.km_driven) : null,
+        // Garantir que valores decimais sejam números válidos
+        estimated_liters: usageData.estimated_liters ? Number(usageData.estimated_liters) : null,
+        price_per_liter: usageData.price_per_liter ? Number(usageData.price_per_liter) : null,
+        total_cost: usageData.total_cost ? Number(usageData.total_cost) : null,
+      };
+
+      console.log('Sending vehicle usage data:', processedData);
+
       const { data, error } = await supabase
         .from('vehicle_usage')
-        .insert([{ ...usageData, user_id: user.id }])
+        .insert([processedData])
         .select()
         .single();
 
@@ -110,9 +126,22 @@ export const useVehicleUsage = () => {
     mutationFn: async (usageData: Partial<VehicleUsage> & { id: string }) => {
       if (!user?.id) throw new Error('User not authenticated');
 
+      // Converter valores para os tipos corretos antes de enviar
+      const processedData = {
+        ...usageData,
+        // Garantir que valores de quilometragem sejam inteiros
+        initial_odometer: usageData.initial_odometer ? Math.round(usageData.initial_odometer) : undefined,
+        final_odometer: usageData.final_odometer ? Math.round(usageData.final_odometer) : undefined,
+        km_driven: usageData.km_driven ? Math.round(usageData.km_driven) : undefined,
+        // Garantir que valores decimais sejam números válidos
+        estimated_liters: usageData.estimated_liters ? Number(usageData.estimated_liters) : undefined,
+        price_per_liter: usageData.price_per_liter ? Number(usageData.price_per_liter) : undefined,
+        total_cost: usageData.total_cost ? Number(usageData.total_cost) : undefined,
+      };
+
       const { data, error } = await supabase
         .from('vehicle_usage')
-        .update(usageData)
+        .update(processedData)
         .eq('id', usageData.id)
         .eq('user_id', user.id)
         .select()
