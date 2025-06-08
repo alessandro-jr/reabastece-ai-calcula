@@ -66,7 +66,13 @@ export type Database = {
         Row: {
           brand: string | null
           created_at: string
+          diesel_consumption: number | null
+          electric_consumption: number | null
+          ethanol_consumption: number | null
+          flex_consumption: number | null
           fuel_type: string
+          gasoline_consumption: number | null
+          hybrid_consumption: number | null
           id: string
           model: string | null
           name: string
@@ -77,7 +83,13 @@ export type Database = {
         Insert: {
           brand?: string | null
           created_at?: string
+          diesel_consumption?: number | null
+          electric_consumption?: number | null
+          ethanol_consumption?: number | null
+          flex_consumption?: number | null
           fuel_type?: string
+          gasoline_consumption?: number | null
+          hybrid_consumption?: number | null
           id?: string
           model?: string | null
           name: string
@@ -88,7 +100,13 @@ export type Database = {
         Update: {
           brand?: string | null
           created_at?: string
+          diesel_consumption?: number | null
+          electric_consumption?: number | null
+          ethanol_consumption?: number | null
+          flex_consumption?: number | null
           fuel_type?: string
+          gasoline_consumption?: number | null
+          hybrid_consumption?: number | null
           id?: string
           model?: string | null
           name?: string
