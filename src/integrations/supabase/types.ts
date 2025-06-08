@@ -9,7 +9,95 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      refuelings: {
+        Row: {
+          created_at: string
+          date: string
+          gas_station: string | null
+          id: string
+          liters: number
+          notes: string | null
+          odometer: number | null
+          price_per_liter: number
+          total_cost: number
+          updated_at: string
+          user_id: string
+          vehicle_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          gas_station?: string | null
+          id?: string
+          liters: number
+          notes?: string | null
+          odometer?: number | null
+          price_per_liter: number
+          total_cost: number
+          updated_at?: string
+          user_id: string
+          vehicle_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          gas_station?: string | null
+          id?: string
+          liters?: number
+          notes?: string | null
+          odometer?: number | null
+          price_per_liter?: number
+          total_cost?: number
+          updated_at?: string
+          user_id?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refuelings_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vehicles: {
+        Row: {
+          brand: string | null
+          created_at: string
+          fuel_type: string
+          id: string
+          model: string | null
+          name: string
+          updated_at: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          brand?: string | null
+          created_at?: string
+          fuel_type?: string
+          id?: string
+          model?: string | null
+          name: string
+          updated_at?: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          brand?: string | null
+          created_at?: string
+          fuel_type?: string
+          id?: string
+          model?: string | null
+          name?: string
+          updated_at?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

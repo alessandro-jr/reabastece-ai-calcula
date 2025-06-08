@@ -1,11 +1,72 @@
 
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useVehicles } from '@/hooks/useVehicles';
+import { useRefuelings } from '@/hooks/useRefuelings';
 import { AuthButton } from '@/components/AuthButton';
+import { VehicleForm } from '@/components/VehicleForm';
+import { RefuelingForm } from '@/components/RefuelingForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Fuel, Car, TrendingUp, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Fuel, Car, TrendingUp, Calendar, Plus, Edit, Trash2 } from 'lucide-react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { vehicles, createVehicle, updateVehicle, deleteVehicle } = useVehicles();
+  const { refuelings, createRefueling, updateRefueling, deleteRefueling } = useRefuelings();
+  
+  const [isVehicleFormOpen, setIsVehicleFormOpen] = useState(false);
+  const [isRefuelingFormOpen, setIsRefuelingFormOpen] = useState(false);
+  const [editingVehicle, setEditingVehicle] = useState(null);
+  const [editingRefueling, setEditingRefueling] = useState(null);
+
+  // Cálculos do dashboard
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  
+  const monthlyRefuelings = refuelings.filter(r => {
+    const refuelingDate = new Date(r.date);
+    return refuelingDate.getMonth() === currentMonth && refuelingDate.getFullYear() === currentYear;
+  });
+
+  const totalLitersThisMonth = monthlyRefuelings.reduce((sum, r) => sum + Number(r.liters), 0);
+  const totalCostThisMonth = monthlyRefuelings.reduce((sum, r) => sum + Number(r.total_cost), 0);
+  const lastRefueling = refuelings[0];
+
+  const handleVehicleSubmit = async (vehicleData: any) => {
+    if (editingVehicle) {
+      await updateVehicle.mutateAsync({ id: editingVehicle.id, ...vehicleData });
+      setEditingVehicle(null);
+    } else {
+      await createVehicle.mutateAsync(vehicleData);
+    }
+    setIsVehicleFormOpen(false);
+  };
+
+  const handleRefuelingSubmit = async (refuelingData: any) => {
+    if (editingRefueling) {
+      await updateRefueling.mutateAsync({ id: editingRefueling.id, ...refuelingData });
+      setEditingRefueling(null);
+    } else {
+      await createRefueling.mutateAsync(refuelingData);
+    }
+    setIsRefuelingFormOpen(false);
+  };
+
+  const getFuelTypeLabel = (type: string) => {
+    const types = {
+      gasoline: 'Gasolina',
+      ethanol: 'Etanol',
+      diesel: 'Diesel',
+      flex: 'Flex',
+      electric: 'Elétrico',
+      hybrid: 'Híbrido'
+    };
+    return types[type] || type;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -31,119 +92,203 @@ const Dashboard = () => {
           </p>
         </div>
 
+        {/* Cards de estatísticas */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Abastecido
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Total Abastecido</CardTitle>
               <Fuel className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0L</div>
-              <p className="text-xs text-muted-foreground">
-                Este mês
-              </p>
+              <div className="text-2xl font-bold">{totalLitersThisMonth.toFixed(1)}L</div>
+              <p className="text-xs text-muted-foreground">Este mês</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Veículos Cadastrados
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Veículos Cadastrados</CardTitle>
               <Car className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">0</div>
+              <div className="text-2xl font-bold">{vehicles.length}</div>
               <p className="text-xs text-muted-foreground">
-                Nenhum veículo cadastrado
+                {vehicles.length === 0 ? 'Nenhum veículo' : `${vehicles.length} veículo${vehicles.length > 1 ? 's' : ''}`}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Gasto Total
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Gasto Total</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">R$ 0,00</div>
-              <p className="text-xs text-muted-foreground">
-                Este mês
-              </p>
+              <div className="text-2xl font-bold">R$ {totalCostThisMonth.toFixed(2)}</div>
+              <p className="text-xs text-muted-foreground">Este mês</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Último Abastecimento
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Último Abastecimento</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">-</div>
+              <div className="text-2xl font-bold">
+                {lastRefueling ? format(new Date(lastRefueling.date), 'dd/MM', { locale: ptBR }) : '-'}
+              </div>
               <p className="text-xs text-muted-foreground">
-                Nenhum registro
+                {lastRefueling ? `${lastRefueling.liters}L` : 'Nenhum registro'}
               </p>
             </CardContent>
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Veículos */}
           <Card>
-            <CardHeader>
-              <CardTitle>Próximos Passos</CardTitle>
-              <CardDescription>
-                Configure seu app para começar a usar
-              </CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Seus Veículos</CardTitle>
+                <CardDescription>Gerencie seus veículos cadastrados</CardDescription>
+              </div>
+              <Button size="sm" onClick={() => setIsVehicleFormOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar
+              </Button>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 border rounded-lg">
-                  <Car className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Cadastre seu primeiro veículo</p>
-                    <p className="text-sm text-gray-600">
-                      Adicione informações do seu carro, moto ou caminhão
-                    </p>
-                  </div>
+              {vehicles.length === 0 ? (
+                <div className="text-center py-8">
+                  <Car className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 mb-2">Nenhum veículo cadastrado</p>
+                  <p className="text-sm text-gray-400">Adicione seu primeiro veículo</p>
                 </div>
-                <div className="flex items-center gap-3 p-3 border rounded-lg">
-                  <Fuel className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="font-medium">Registre seu primeiro abastecimento</p>
-                    <p className="text-sm text-gray-600">
-                      Comece a acompanhar seus gastos com combustível
-                    </p>
-                  </div>
+              ) : (
+                <div className="space-y-4">
+                  {vehicles.map((vehicle) => (
+                    <div key={vehicle.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{vehicle.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {vehicle.brand} {vehicle.model} {vehicle.year}
+                        </p>
+                        <Badge variant="secondary" className="mt-1">
+                          {getFuelTypeLabel(vehicle.fuel_type)}
+                        </Badge>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingVehicle(vehicle);
+                            setIsVehicleFormOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => deleteVehicle.mutate(vehicle.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
+          {/* Abastecimentos Recentes */}
           <Card>
-            <CardHeader>
-              <CardTitle>Histórico Recente</CardTitle>
-              <CardDescription>
-                Seus últimos abastecimentos
-              </CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Abastecimentos Recentes</CardTitle>
+                <CardDescription>Seus últimos registros</CardDescription>
+              </div>
+              <Button 
+                size="sm" 
+                onClick={() => setIsRefuelingFormOpen(true)}
+                disabled={vehicles.length === 0}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Registrar
+              </Button>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Fuel className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 mb-2">Nenhum abastecimento registrado</p>
-                <p className="text-sm text-gray-400">
-                  Seus registros aparecerão aqui
-                </p>
-              </div>
+              {refuelings.length === 0 ? (
+                <div className="text-center py-8">
+                  <Fuel className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 mb-2">Nenhum abastecimento registrado</p>
+                  <p className="text-sm text-gray-400">
+                    {vehicles.length === 0 ? 'Cadastre um veículo primeiro' : 'Registre seu primeiro abastecimento'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {refuelings.slice(0, 5).map((refueling) => (
+                    <div key={refueling.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{refueling.vehicle?.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {format(new Date(refueling.date), 'dd/MM/yyyy', { locale: ptBR })} • {refueling.liters}L
+                        </p>
+                        <p className="text-sm text-gray-600">R$ {Number(refueling.total_cost).toFixed(2)}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingRefueling(refueling);
+                            setIsRefuelingFormOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => deleteRefueling.mutate(refueling.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
       </main>
+
+      <VehicleForm
+        isOpen={isVehicleFormOpen}
+        onOpenChange={(open) => {
+          setIsVehicleFormOpen(open);
+          if (!open) setEditingVehicle(null);
+        }}
+        onSubmit={handleVehicleSubmit}
+        vehicle={editingVehicle}
+        isLoading={createVehicle.isPending || updateVehicle.isPending}
+      />
+
+      <RefuelingForm
+        isOpen={isRefuelingFormOpen}
+        onOpenChange={(open) => {
+          setIsRefuelingFormOpen(open);
+          if (!open) setEditingRefueling(null);
+        }}
+        onSubmit={handleRefuelingSubmit}
+        refueling={editingRefueling}
+        isLoading={createRefueling.isPending || updateRefueling.isPending}
+      />
     </div>
   );
 };
