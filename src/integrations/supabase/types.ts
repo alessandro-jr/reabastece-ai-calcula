@@ -62,6 +62,71 @@ export type Database = {
           },
         ]
       }
+      vehicle_usage: {
+        Row: {
+          created_at: string
+          date: string
+          estimated_liters: number | null
+          final_odometer: number | null
+          fuel_type: string
+          gas_station: string | null
+          id: string
+          initial_odometer: number | null
+          is_paid: boolean
+          km_driven: number | null
+          notes: string | null
+          price_per_liter: number | null
+          total_cost: number | null
+          updated_at: string
+          user_id: string
+          vehicle_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          estimated_liters?: number | null
+          final_odometer?: number | null
+          fuel_type: string
+          gas_station?: string | null
+          id?: string
+          initial_odometer?: number | null
+          is_paid?: boolean
+          km_driven?: number | null
+          notes?: string | null
+          price_per_liter?: number | null
+          total_cost?: number | null
+          updated_at?: string
+          user_id: string
+          vehicle_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          estimated_liters?: number | null
+          final_odometer?: number | null
+          fuel_type?: string
+          gas_station?: string | null
+          id?: string
+          initial_odometer?: number | null
+          is_paid?: boolean
+          km_driven?: number | null
+          notes?: string | null
+          price_per_liter?: number | null
+          total_cost?: number | null
+          updated_at?: string
+          user_id?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_usage_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           brand: string | null

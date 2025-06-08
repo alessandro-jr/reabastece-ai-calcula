@@ -1,15 +1,16 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useVehicles } from '@/hooks/useVehicles';
 import { useRefuelings } from '@/hooks/useRefuelings';
+import { useVehicleUsage } from '@/hooks/useVehicleUsage';
 import { AuthButton } from '@/components/AuthButton';
 import { VehicleForm } from '@/components/VehicleForm';
 import { RefuelingForm } from '@/components/RefuelingForm';
+import { VehicleUsageForm } from '@/components/VehicleUsageForm';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Fuel, Car, TrendingUp, Calendar, Plus, Edit, Trash2 } from 'lucide-react';
+import { Fuel, Car, TrendingUp, Calendar, Plus, Edit, Trash2, Route, DollarSign } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -17,11 +18,14 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { vehicles, createVehicle, updateVehicle, deleteVehicle } = useVehicles();
   const { refuelings, createRefueling, updateRefueling, deleteRefueling } = useRefuelings();
+  const { vehicleUsage, createVehicleUsage, updateVehicleUsage, deleteVehicleUsage } = useVehicleUsage();
   
   const [isVehicleFormOpen, setIsVehicleFormOpen] = useState(false);
   const [isRefuelingFormOpen, setIsRefuelingFormOpen] = useState(false);
+  const [isUsageFormOpen, setIsUsageFormOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
   const [editingRefueling, setEditingRefueling] = useState(null);
+  const [editingUsage, setEditingUsage] = useState(null);
 
   // Cálculos do dashboard
   const currentMonth = new Date().getMonth();
@@ -54,6 +58,16 @@ const Dashboard = () => {
       await createRefueling.mutateAsync(refuelingData);
     }
     setIsRefuelingFormOpen(false);
+  };
+
+  const handleUsageSubmit = async (usageData: any) => {
+    if (editingUsage) {
+      await updateVehicleUsage.mutateAsync({ id: editingUsage.id, ...usageData });
+      setEditingUsage(null);
+    } else {
+      await createVehicleUsage.mutateAsync(usageData);
+    }
+    setIsUsageFormOpen(false);
   };
 
   const getFuelTypeLabel = (type: string) => {
@@ -145,7 +159,7 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Veículos */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -265,6 +279,77 @@ const Dashboard = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Registro de Uso */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Registro de Uso</CardTitle>
+                <CardDescription>Acompanhe o uso dos seus veículos</CardDescription>
+              </div>
+              <Button 
+                size="sm" 
+                onClick={() => setIsUsageFormOpen(true)}
+                disabled={vehicles.length === 0}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Registrar
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {vehicleUsage.length === 0 ? (
+                <div className="text-center py-8">
+                  <Route className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-gray-500 mb-2">Nenhum uso registrado</p>
+                  <p className="text-sm text-gray-400">
+                    {vehicles.length === 0 ? 'Cadastre um veículo primeiro' : 'Registre o primeiro uso'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {vehicleUsage.slice(0, 5).map((usage) => (
+                    <div key={usage.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{usage.vehicle?.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {format(new Date(usage.date), 'dd/MM/yyyy', { locale: ptBR })} • 
+                          {usage.km_driven ? ` ${usage.km_driven}km` : ''} • 
+                          {getFuelTypeLabel(usage.fuel_type)}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          {usage.total_cost && (
+                            <span className="text-sm text-gray-600">R$ {Number(usage.total_cost).toFixed(2)}</span>
+                          )}
+                          <Badge variant={usage.is_paid ? "default" : "secondary"}>
+                            {usage.is_paid ? "Pago" : "Pendente"}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingUsage(usage);
+                            setIsUsageFormOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => deleteVehicleUsage.mutate(usage.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </main>
 
@@ -288,6 +373,17 @@ const Dashboard = () => {
         onSubmit={handleRefuelingSubmit}
         refueling={editingRefueling}
         isLoading={createRefueling.isPending || updateRefueling.isPending}
+      />
+
+      <VehicleUsageForm
+        isOpen={isUsageFormOpen}
+        onOpenChange={(open) => {
+          setIsUsageFormOpen(open);
+          if (!open) setEditingUsage(null);
+        }}
+        onSubmit={handleUsageSubmit}
+        usage={editingUsage}
+        isLoading={createVehicleUsage.isPending || updateVehicleUsage.isPending}
       />
     </div>
   );
