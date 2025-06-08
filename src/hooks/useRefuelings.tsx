@@ -51,7 +51,7 @@ export const useRefuelings = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['refuelings'] });
+      queryClient.invalidateQueries({ queryKey: ['refuelings', user?.id] });
       toast({
         title: "Abastecimento registrado!",
         description: "Seu abastecimento foi salvo com sucesso.",
@@ -79,7 +79,7 @@ export const useRefuelings = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['refuelings'] });
+      queryClient.invalidateQueries({ queryKey: ['refuelings', user?.id] });
       toast({
         title: "Abastecimento atualizado!",
         description: "As informações foram salvas com sucesso.",
@@ -104,7 +104,7 @@ export const useRefuelings = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['refuelings'] });
+      queryClient.invalidateQueries({ queryKey: ['refuelings', user?.id] });
       toast({
         title: "Abastecimento removido!",
         description: "O registro foi excluído com sucesso.",

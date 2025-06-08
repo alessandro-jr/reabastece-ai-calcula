@@ -106,7 +106,7 @@ export const useVehicleUsage = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vehicle-usage'] });
+      queryClient.invalidateQueries({ queryKey: ['vehicle-usage', user?.id] });
       toast({
         title: 'Sucesso!',
         description: 'Registro de uso criado com sucesso.',
@@ -151,7 +151,7 @@ export const useVehicleUsage = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vehicle-usage'] });
+      queryClient.invalidateQueries({ queryKey: ['vehicle-usage', user?.id] });
       toast({
         title: 'Sucesso!',
         description: 'Registro de uso atualizado com sucesso.',
@@ -180,7 +180,7 @@ export const useVehicleUsage = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vehicle-usage'] });
+      queryClient.invalidateQueries({ queryKey: ['vehicle-usage', user?.id] });
       toast({
         title: 'Sucesso!',
         description: 'Registro de uso deletado com sucesso.',

@@ -48,7 +48,7 @@ export const useVehicles = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+      queryClient.invalidateQueries({ queryKey: ['vehicles', user?.id] });
       toast({
         title: "Veículo criado!",
         description: "Seu veículo foi cadastrado com sucesso.",
@@ -76,7 +76,7 @@ export const useVehicles = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+      queryClient.invalidateQueries({ queryKey: ['vehicles', user?.id] });
       toast({
         title: "Veículo atualizado!",
         description: "As informações foram salvas com sucesso.",
@@ -101,7 +101,7 @@ export const useVehicles = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+      queryClient.invalidateQueries({ queryKey: ['vehicles', user?.id] });
       toast({
         title: "Veículo removido!",
         description: "O veículo foi excluído com sucesso.",
