@@ -19,6 +19,10 @@ interface RefuelingFormProps {
   isLoading?: boolean;
 }
 
+export const calculateTotal = (liters: number, pricePerLiter: number) => {
+  return (liters * pricePerLiter).toFixed(2);
+};
+
 export const RefuelingForm = ({ isOpen, onOpenChange, onSubmit, refueling, isLoading }: RefuelingFormProps) => {
   const { vehicles } = useVehicles();
   const [formData, setFormData] = useState({
@@ -54,9 +58,6 @@ export const RefuelingForm = ({ isOpen, onOpenChange, onSubmit, refueling, isLoa
     }
   };
 
-  const calculateTotal = (liters: number, pricePerLiter: number) => {
-    return (liters * pricePerLiter).toFixed(2);
-  };
 
   const handleLitersChange = (value: string) => {
     const liters = Number(value);
