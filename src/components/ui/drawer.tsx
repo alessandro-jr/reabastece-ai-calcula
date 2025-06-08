@@ -41,13 +41,18 @@ const DrawerContent = React.forwardRef<
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background p-6 gap-4",
+        "fixed inset-x-0 bottom-0 z-50 mt-24 flex max-h-[100dvh] flex-col rounded-t-[10px] border bg-background p-0",
         className
       )}
       {...props}
     >
+      {/* Drag handle */}
       <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
-      {children}
+      
+      {/* Conteúdo scrollável */}
+      <div className="flex-1 overflow-y-auto p-6 gap-4 flex flex-col">
+        {children}
+      </div>
     </DrawerPrimitive.Content>
   </DrawerPortal>
 ))
@@ -81,10 +86,7 @@ const DrawerTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DrawerPrimitive.Title
     ref={ref}
-    className={cn(
-      "text-lg font-semibold leading-none tracking-tight",
-      className
-    )}
+    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
     {...props}
   />
 ))

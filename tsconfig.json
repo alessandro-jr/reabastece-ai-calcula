@@ -5,10 +5,16 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
     },
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "target": "ESNext",
+    "resolveJsonModule": true,
     "noImplicitAny": false,
     "noUnusedParameters": false,
     "skipLibCheck": true,

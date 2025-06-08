@@ -83,13 +83,15 @@ export const RefuelingForm = ({ isOpen, onOpenChange, onSubmit, refueling, isLoa
 
   return (
     <Modal open={isOpen} onOpenChange={onOpenChange}>
-      <ModalContent className={`${isMobile ? '' : 'sm:max-w-[500px]'} max-h-[90vh] overflow-y-auto`}>
-        <ModalHeader>
-          <ModalTitle>{refueling ? 'Editar Abastecimento' : 'Novo Abastecimento'}</ModalTitle>
-          <ModalDescription>
-            {refueling ? 'Edite as informações do abastecimento.' : 'Registre um novo abastecimento.'}
-          </ModalDescription>
-        </ModalHeader>
+      <ModalContent className="p-0">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-y-auto px-6 py-4 space-y-4">
+          <ModalHeader>
+            <ModalTitle>{refueling ? 'Editar Abastecimento' : 'Novo Abastecimento'}</ModalTitle>
+            <ModalDescription>
+              {refueling ? 'Edite as informações do abastecimento.' : 'Registre um novo abastecimento.'}
+            </ModalDescription>
+          </ModalHeader>
+          </form>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="vehicle_id">Veículo *</Label>
@@ -190,10 +192,8 @@ export const RefuelingForm = ({ isOpen, onOpenChange, onSubmit, refueling, isLoa
               rows={3}
             />
           </div>
-          <ModalFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
-            </Button>
+          <ModalFooter className="mt-auto bg-background sticky bottom-0 py-4">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
             <Button type="submit" disabled={isLoading || !formData.vehicle_id}>
               {isLoading ? 'Salvando...' : refueling ? 'Atualizar' : 'Registrar'}
             </Button>

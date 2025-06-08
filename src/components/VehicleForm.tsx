@@ -1,11 +1,30 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Drawer, DrawerContent as DrawerContentUI, DrawerDescription as DrawerDescriptionUI, DrawerFooter as DrawerFooterUI, DrawerHeader as DrawerHeaderUI, DrawerTitle as DrawerTitleUI } from '@/components/ui/drawer';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Drawer,
+  DrawerContent as DrawerContentUI,
+  DrawerDescription as DrawerDescriptionUI,
+  DrawerFooter as DrawerFooterUI,
+  DrawerHeader as DrawerHeaderUI,
+  DrawerTitle as DrawerTitleUI,
+} from '@/components/ui/drawer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -84,11 +103,13 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
             id="gasoline_consumption"
             type="number"
             step="0.1"
-            value={formData.gasoline_consumption || ''}
-            onChange={(e) => setFormData({ 
-              ...formData, 
-              gasoline_consumption: e.target.value ? parseFloat(e.target.value) : null 
-            })}
+            value={formData.gasoline_consumption ?? ''}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                gasoline_consumption: e.target.value ? parseFloat(e.target.value) : null,
+              })
+            }
             placeholder="Ex: 12.5"
           />
         </div>
@@ -103,11 +124,13 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
             id="ethanol_consumption"
             type="number"
             step="0.1"
-            value={formData.ethanol_consumption || ''}
-            onChange={(e) => setFormData({ 
-              ...formData, 
-              ethanol_consumption: e.target.value ? parseFloat(e.target.value) : null 
-            })}
+            value={formData.ethanol_consumption ?? ''}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                ethanol_consumption: e.target.value ? parseFloat(e.target.value) : null,
+              })
+            }
             placeholder="Ex: 8.5"
           />
         </div>
@@ -122,11 +145,13 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
             id="diesel_consumption"
             type="number"
             step="0.1"
-            value={formData.diesel_consumption || ''}
-            onChange={(e) => setFormData({ 
-              ...formData, 
-              diesel_consumption: e.target.value ? parseFloat(e.target.value) : null 
-            })}
+            value={formData.diesel_consumption ?? ''}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                diesel_consumption: e.target.value ? parseFloat(e.target.value) : null,
+              })
+            }
             placeholder="Ex: 15.0"
           />
         </div>
@@ -141,11 +166,13 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
             id="electric_consumption"
             type="number"
             step="0.1"
-            value={formData.electric_consumption || ''}
-            onChange={(e) => setFormData({ 
-              ...formData, 
-              electric_consumption: e.target.value ? parseFloat(e.target.value) : null 
-            })}
+            value={formData.electric_consumption ?? ''}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                electric_consumption: e.target.value ? parseFloat(e.target.value) : null,
+              })
+            }
             placeholder="Ex: 5.2"
           />
         </div>
@@ -160,11 +187,13 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
             id="hybrid_consumption"
             type="number"
             step="0.1"
-            value={formData.hybrid_consumption || ''}
-            onChange={(e) => setFormData({ 
-              ...formData, 
-              hybrid_consumption: e.target.value ? parseFloat(e.target.value) : null 
-            })}
+            value={formData.hybrid_consumption ?? ''}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                hybrid_consumption: e.target.value ? parseFloat(e.target.value) : null,
+              })
+            }
             placeholder="Ex: 18.0"
           />
         </div>
@@ -184,14 +213,20 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
 
   return (
     <Modal open={isOpen} onOpenChange={onOpenChange}>
-      <ModalContent className={`${isMobile ? '' : 'sm:max-w-[425px]'} max-h-[90vh] overflow-y-auto`}>
-        <ModalHeader>
-          <ModalTitle>{vehicle ? 'Editar Veículo' : 'Novo Veículo'}</ModalTitle>
-          <ModalDescription>
-            {vehicle ? 'Edite as informações do seu veículo.' : 'Adicione um novo veículo ao seu cadastro.'}
-          </ModalDescription>
-        </ModalHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <ModalContent className="p-0">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col h-full overflow-y-auto px-6 py-4 space-y-4"
+        >
+          <ModalHeader>
+            <ModalTitle>{vehicle ? 'Editar Veículo' : 'Novo Veículo'}</ModalTitle>
+            <ModalDescription>
+              {vehicle
+                ? 'Edite as informações do seu veículo.'
+                : 'Adicione um novo veículo ao seu cadastro.'}
+            </ModalDescription>
+          </ModalHeader>
+
           <div className="space-y-2">
             <Label htmlFor="name">Nome do Veículo *</Label>
             <Input
@@ -202,6 +237,7 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
               required
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="brand">Marca</Label>
             <Input
@@ -211,6 +247,7 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
               placeholder="Ex: Toyota"
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="model">Modelo</Label>
             <Input
@@ -220,22 +257,26 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
               placeholder="Ex: Corolla"
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="year">Ano</Label>
             <Input
               id="year"
               type="number"
-              value={formData.year || ''}
-              onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+              value={formData.year}
+              onChange={(e) =>
+                setFormData({ ...formData, year: parseInt(e.target.value) || new Date().getFullYear() })
+              }
               placeholder="Ex: 2020"
               min="1900"
               max={new Date().getFullYear() + 1}
             />
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="fuel_type">Tipo de Combustível</Label>
-            <Select 
-              value={formData.fuel_type} 
+            <Select
+              value={formData.fuel_type}
               onValueChange={(value) => setFormData({ ...formData, fuel_type: value })}
             >
               <SelectTrigger>
@@ -251,10 +292,10 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
               </SelectContent>
             </Select>
           </div>
-          
+
           {getFuelConsumptionFields()}
 
-          <ModalFooter>
+          <ModalFooter className="mt-auto bg-background sticky bottom-0 py-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
