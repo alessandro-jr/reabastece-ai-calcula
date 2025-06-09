@@ -163,12 +163,9 @@ const Auth = () => {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="bg-primary p-3 rounded-full">
-              <Fuel className="h-8 w-8 text-white" />
+              <img src="/logo.png" alt="Reabastece Aí" className="h-8 w-auto" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-primary">
-            Reabastece Aí
-          </CardTitle>
           <CardDescription>
             Entre ou crie uma conta para controlar seus abastecimentos
           </CardDescription>
