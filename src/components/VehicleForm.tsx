@@ -213,10 +213,10 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
 
   return (
     <Modal open={isOpen} onOpenChange={onOpenChange}>
-      <ModalContent className="p-0">
+      <ModalContent className="h-[90svh] overflow-hidden flex flex-col p-0">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col h-full overflow-y-auto px-6 py-4 space-y-4"
+          className="flex-1 overflow-y-auto px-6 py-4 space-y-4"
         >
           <ModalHeader>
             <ModalTitle>{vehicle ? 'Editar Veículo' : 'Novo Veículo'}</ModalTitle>
@@ -294,16 +294,16 @@ export const VehicleForm = ({ isOpen, onOpenChange, onSubmit, vehicle, isLoading
           </div>
 
           {getFuelConsumptionFields()}
-
-          <ModalFooter className="mt-auto bg-background sticky bottom-0 py-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Salvando...' : vehicle ? 'Atualizar' : 'Criar'}
-            </Button>
-          </ModalFooter>
         </form>
+
+        <ModalFooter className="border-t px-6 py-4 bg-background">
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            Cancelar
+          </Button>
+          <Button type="submit" form="vehicle-form" disabled={isLoading}>
+            {isLoading ? 'Salvando...' : 'Salvar'}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

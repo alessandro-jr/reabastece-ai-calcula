@@ -83,7 +83,7 @@ export const RefuelingForm = ({ isOpen, onOpenChange, onSubmit, refueling, isLoa
 
   return (
     <Modal open={isOpen} onOpenChange={onOpenChange}>
-      <ModalContent className="p-0">
+      <ModalContent className="flex flex-col h-[90svh] p-0">
         <form onSubmit={handleSubmit} className="flex flex-col h-full overflow-y-auto px-6 py-4 space-y-4">
           <ModalHeader>
             <ModalTitle>{refueling ? 'Editar Abastecimento' : 'Novo Abastecimento'}</ModalTitle>
@@ -192,12 +192,12 @@ export const RefuelingForm = ({ isOpen, onOpenChange, onSubmit, refueling, isLoa
               rows={3}
             />
           </div>
-          <ModalFooter className="mt-auto bg-background sticky bottom-0 py-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-            <Button type="submit" disabled={isLoading || !formData.vehicle_id}>
-              {isLoading ? 'Salvando...' : refueling ? 'Atualizar' : 'Registrar'}
-            </Button>
-          </ModalFooter>
+          <ModalFooter className="sticky bottom-0 left-0 z-10 bg-background border-t p-4">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={isLoading}>{isLoading ? 'Salvando...' : 'Salvar'}</Button>
+            </ModalFooter>
         </form>
       </ModalContent>
     </Modal>

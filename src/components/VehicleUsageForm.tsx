@@ -191,9 +191,9 @@ export const VehicleUsageForm = ({
 
   return (
     <Modal open={isOpen} onOpenChange={onOpenChange}>
-      <ModalContent className="p-0">
+      <ModalContent className="h-[90svh] overflow-hidden flex flex-col p-0">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col h-full overflow-y-auto px-6 py-4 space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
             <ModalHeader>
               <ModalTitle>{usage ? 'Editar Registro de Uso' : 'Novo Registro de Uso do Veículo'}</ModalTitle>
               <ModalDescription>
@@ -231,7 +231,7 @@ export const VehicleUsageForm = ({
                 name="fuel_type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tipo de Combustível *</FormLabel>
+                    <FormLabel>Combustível *</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -290,7 +290,7 @@ export const VehicleUsageForm = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {name === 'estimated_liters' ? 'Litros Estimados' : name === 'price_per_liter' ? 'Preço por Litro' : 'Total a Pagar'}
+                        {name === 'estimated_liters' ? 'Litros' : name === 'price_per_liter' ? 'Preço/Litro' : 'Total a Pagar'}
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -384,11 +384,11 @@ export const VehicleUsageForm = ({
                 </FormItem>
               )}
             />
-
-            <ModalFooter className="mt-auto bg-background sticky bottom-0 py-4">
+            <div className="h-[80px]" /> {/* espaço para não esconder conteúdo atrás dos botões */}
+            <ModalFooter className="border-t px-6 py-4 bg-background">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Salvando...' : usage ? 'Atualizar' : 'Salvar'}
+                {isLoading ? 'Salvando...' : 'Salvar'}
               </Button>
             </ModalFooter>
           </form>

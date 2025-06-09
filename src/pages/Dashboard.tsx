@@ -95,7 +95,12 @@ const Dashboard = () => {
               <Fuel className="h-8 w-8 text-primary" />
               <h1 className="text-xl font-bold text-primary">Reabastece Aí</h1>
             </div>
-            <AuthButton />
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-700">
+                {user?.user_metadata?.full_name || 'Usuário'}
+              </span>
+              
+            </div>
           </div>
         </div>
       </header>
