@@ -1,73 +1,52 @@
-# Welcome to your Lovable project
+Reabastece Aí 
 
-## Project info
+Aplicação web para registro e controle de abastecimentos de veículos, com cálculo automático de consumo e custos. O projeto utiliza React (via Vite), TypeScript e Tailwind CSS no front‑end, além do Supabase para autenticação, banco de dados e funções serverless.
 
-**URL**: https://lovable.dev/projects/69d97fd6-8362-44c8-b1c8-70f5f23619f2
+Funcionalidades
+Cadastro de veículos, abastecimentos e registros de uso.
 
-## How can I edit this code?
+Cálculo de litros, custo total e consumo por quilômetro.
 
-There are several ways of editing your application.
+Integração com Supabase para autenticação e armazenamento dos dados.
 
-**Use Lovable**
+Função serverless daily-activity (Supabase Functions) para registrar atividades automatizadas.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/69d97fd6-8362-44c8-b1c8-70f5f23619f2) and start prompting.
+Testes unitários com Vitest.
 
-Changes made via Lovable will be committed automatically to this repo.
+Pré-requisitos
+Node.js (versão 18 ou superior)
 
-**Use your preferred IDE**
+npm
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Instalação e execução
+# Instale as dependências
+npm install
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Inicie o servidor de desenvolvimento
 npm run dev
-```
+A aplicação será servida em http://localhost:8080.
 
-**Edit a file directly in GitHub**
+Scripts úteis
+npm run build – Compila o projeto para produção.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+npm run preview – Pré-visualiza o build de produção.
 
-**Use GitHub Codespaces**
+npm run lint – Executa o ESLint.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+npm test – Executa os testes com Vitest.
 
-## What technologies are used for this project?
+Estrutura do projeto
+├─ src/
+│  ├─ components/     # Componentes React (formularios, rotas protegidas etc.)
+│  ├─ hooks/          # Hooks personalizados (auth, veículos, abastecimentos)
+│  ├─ integrations/   # Integração com Supabase (client e tipos)
+│  ├─ pages/          # Páginas da aplicação (Dashboard, Auth, etc.)
+│  └─ main.tsx        # Ponto de entrada do React
+├─ public/            # Arquivos estáticos
+├─ supabase/          # Configurações e funções serverless
+└─ package.json       # Dependências e scripts
 
-This project is built with:
+Testes
+Os testes utilizam Vitest. Para executá-los:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/69d97fd6-8362-44c8-b1c8-70f5f23619f2) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+npm test
